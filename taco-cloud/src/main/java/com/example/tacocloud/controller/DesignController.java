@@ -14,11 +14,10 @@ import com.example.tacocloud.dto.TacoOrderDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -27,7 +26,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Controller
 @RequestMapping("/design")
-@SessionAttributes("tacoOrder")
+@SessionAttributes("tacoOrderDto")
 public class DesignController {
 
     @ModelAttribute
@@ -52,13 +51,13 @@ public class DesignController {
         }
     }
 
-    @ModelAttribute(name = "tacoOrder")
+    @ModelAttribute(name = "tacoOrderDto")
     public TacoOrderDto order() {
 
         return new TacoOrderDto();
     }
 
-    @ModelAttribute(name = "taco")
+    @ModelAttribute(name = "tacoDto")
     public TacoDto taco() {
 
         return new TacoDto();
@@ -68,6 +67,19 @@ public class DesignController {
     public String showDesignForm() {
 
         return "design";
+    }
+
+    @PostMapping
+    public String processTaco(@Valid TacoDto tacoDto, Errors errors, @ModelAttribute TacoOrderDto tacoOrderDto) {
+
+        if (errors.hasErrors()) {
+            return "design";
+        }
+
+        tacoOrderDto.addTaco(tacoDto);
+        log.info("Processing taco: {}", tacoDto);
+
+        return "redirect:/orders/current";
     }
 
     private Iterable<IngredientDto> filterByType(List<IngredientDto> ingredients, Type type) {

@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <!--/*@thymesVar id="wrap" type="java.util.List<com.example.tacocloud.dto.IngredientDto>"*/-->
+    <!--/*@thymesVar id="protein" type="java.util.List<com.example.tacocloud.dto.IngredientDto>"*/-->
+    <!--/*@thymesVar id="cheese" type="java.util.List<com.example.tacocloud.dto.IngredientDto>"*/-->
+    <!--/*@thymesVar id="veggies" type="java.util.List<com.example.tacocloud.dto.IngredientDto>"*/-->
+    <!--/*@thymesVar id="sauce" type="java.util.List<com.example.tacocloud.dto.IngredientDto>"*/-->
+
     <head>
         <meta charset="UTF-8">
         <title>Taco Cloud</title>
@@ -9,7 +15,12 @@
         <h1>Design your taco!</h1>
         <img th:src="@{/images/TacoCloud.png}" />
 
-        <form method="POST" th:object="${taco}">
+        <form method="POST" th:object="${tacoDto}">
+
+            <span class="validation-error"
+                  th:if="${#fields.hasErrors('ingredients')}"
+                  th:errors="*{ingredients}">Ingredients Error</span>
+
             <div class="grid">
 
                 <div class="ingredient-group" id="wraps">
@@ -55,7 +66,11 @@
 
             <div>
                 <h3>Name your taco creation:</h3>
-                <input type="text" th:field="*{name}" /><br />
+                <input type="text" th:field="*{name}" />
+                <span class="validation-error"
+                      th:if="${#fields.hasErrors('name')}"
+                      th:errors="*{name}">Name Error</span>
+                <br />
                 <button>Submit Tour Taco</button>
             </div>
         </form>
